@@ -1,2 +1,53 @@
+
+// x := 10       // Declare x
+// ptr := &x     // ptr now holds the address of x
+// *ptr = 20     // Dereference ptr to update x
+// fmt.Println(x) // Prints 20
+
 // Package server contains everything for setting up and running the HTTP server.
 package server
+
+import (
+	"context"
+	"errors"
+	"fmt"
+	"net"
+	"net/http"
+	"strconv"
+	"time"
+
+	"github.com/go-chi/chi/v5"
+)
+
+type Server struct {
+	address string
+	mux chi.Router //Mux is short for multiplexer. The mux is what receives an HTTP request, looks at where it should go, and directs it to the code that should give a response. 
+	server *http.Server //gives the value stored at the memory address the pointer is pointing to.  
+}
+
+type Options struct {
+	Host string
+	Port int
+}
+
+
+
+func New(opts Options) *Server {
+	address := net.JoinHostPort(opts.Host, strconv.Itoa(opts.Port))
+	mux := chi.NewMux()
+	return &Server {
+		address: address,
+		mux:	mux,
+		server: &http.Server {
+			Addr:	address,
+			Handler:	mux,
+			ReadTimeout: 5 * time.Second,
+			ReadHeaderTimeout: 5 * time.Second,
+			WriteTimeout: 5 * time.Second,
+			IdleTimeout: 5 * time.Second,
+		},
+		} //& gives memory address
+	
+} 
+
+
