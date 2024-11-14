@@ -50,4 +50,15 @@ func New(opts Options) *Server {
 	
 } 
 
+//setting up routes and listening for HTTP request on the given address
+func (s *Server) Start() error {
+	s.setupRoutes()
+	
+	fmt.Println("Starting on", s.address)
+	if err := s.server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServer) {
+		return fmt.Errorf("error starting server: %w", err)
+	}
+return nil
+}
 
+// Stop the server gracefully within the timeout
