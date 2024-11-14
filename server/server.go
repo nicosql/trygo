@@ -62,3 +62,14 @@ return nil
 }
 
 // Stop the server gracefully within the timeout
+func (s *Server) Stop() error { //in golang this is a "METHOD" and NOT a "FUNCTION"
+	fmt.Println("Stopping")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)//The syntax ctx, cancel := ... means both values returned by context.WithTimeout are assigned to ctx and cancel, respectively, in a single line.
+	defer cancel()
+
+	if err := s.server.Shutdown(ctx); err != nil {
+		return fmt.Errorf("error stopping server: %w", err)
+	}
+	return nil
+}
